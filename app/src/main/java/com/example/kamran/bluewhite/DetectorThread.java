@@ -74,6 +74,8 @@ public class DetectorThread extends Thread {
             int buffer_length = 0;
             int time = 1;
 
+            snoringApi.resetValues();
+
             // initBuffer();
 
             Thread thisThread = Thread.currentThread();
@@ -81,36 +83,12 @@ public class DetectorThread extends Thread {
 
                 buffer = recorder.getFrameBytes();
 
-               // snoringApi.getFrequency(buffer);
-
-//                while(false)
-//                {
-//                    // detect sound
-//
-//
-//                    if(tempBuffer != null) {
-//
-//                        if (time == 0) {
-//                            buffer = tempBuffer;
-//                            buffer_length = tempBuffer.length;
-//                        } else {
-//                            buffer_length = tempBuffer.length + buffer_length;
-//                            for (int i = 0; i < tempBuffer.length; i++) {
-//                                buffer[buffer_length + i + 1] = tempBuffer[i];
-//                            }
-//                        }
-//
-//                        Thread.sleep(1000);
-//                        time--;
-//                    }
-//
-//                }
-
                 // audio analyst
                 if (buffer != null) {
                     System.out.println("How many bytes? " + buffer.length);
-                    AlarmStaticVariables.snoringCount = snoringApi
-                            .isSnoring(buffer);
+                    AlarmStaticVariables.snoringCount = snoringApi.isSnoring(buffer);
+
+                    int apneaCount = snoringApi.isInApnea(buffer);
                     System.out.println("count="
                             + AlarmStaticVariables.snoringCount);
                     if (AlarmStaticVariables.snoringCount >= AlarmStaticVariables.sampleCount) {

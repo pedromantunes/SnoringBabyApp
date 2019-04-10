@@ -5,10 +5,17 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -16,6 +23,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static android.provider.UserDictionary.Words.FREQUENCY;
 
 public class AudioActivity extends AppCompatActivity {
 
@@ -47,14 +62,24 @@ public class AudioActivity extends AppCompatActivity {
     private SurfaceView sfv;
     private Paint mPaint;
 
+    private TextView counter;
+    private Button play;
+    private  Button stop;
+
+    FileInputStream fstream;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.audio_record);
-        sfv = (SurfaceView) this.findViewById(R.id.SurfaceView);
+        //sfv = (SurfaceView) this.findViewById(R.id.SurfaceView);
 
-        View v = (View) findViewById(R.id.SurfaceView);
+        //View v = (View) findViewById(R.id.SurfaceView);
+
+        play = (Button)findViewById(R.id.play_audio);
+        stop = (Button)findViewById(R.id.stop_audio);
+        counter = (TextView) findViewById(R.id.counter) ;
 
         mPaint = new Paint();
         mPaint.setColor(Color.GREEN);
@@ -75,13 +100,38 @@ public class AudioActivity extends AppCompatActivity {
         };
 
         selectedDetection = DETECT_SNORE;
-        // alarmThread = new AlarmThread(pendingIntent, am);
-        recorderThread = new RecorderThread(showhandler);
+        drawThread = new DrawThread(counter);
+        drawThread.start();
+        recorderThread = new RecorderThread(showhandler, getApplicationContext(), null);
         recorderThread.start();
         detectorThread = new DetectorThread(recorderThread, alarmhandler);
         detectorThread.start();
-        drawThread = new DrawThread(sfv.getHeight() / 2, sfv, mPaint);
-        drawThread.start();
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    play(v);
+                }
+                catch (IOException e){
+                    Log.i("IOException", "Error in play");
+                }
+            }
+        });
+
+
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    stop(v);
+                }
+                catch (IOException e){
+                    Log.i("IOException", "Error in play");
+                }
+            }
+        });
+
         // clsOscilloscope.baseLine = sfv.getHeight() / 2;
         // clsOscilloscope.Start(audioRecord, recBufSize, sfv, mPaint);
 
@@ -91,6 +141,43 @@ public class AudioActivity extends AppCompatActivity {
         //show ImageView width and height
 
         //fsfv.getViewTreeObserver().addOnGlobalLayoutListener(new MyGlobalListenerClass());
+
+    }
+
+    public void stop(View view) throws IllegalArgumentException, SecurityException, IllegalStateException, IOException {
+        recorderThread.stopRecording();
+        //detectorThread.stopDetection();
+        //drawThread.stop();
+    }
+
+    public void play(View view) throws IllegalArgumentException, SecurityException, IllegalStateException, IOException {
+
+        String fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/audio_file.txt";
+        File file = new File(fileName);
+
+        byte[] audioData = null;
+
+        try {
+            InputStream inputStream = new FileInputStream(fileName);
+
+            int minBufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            audioData = new byte[minBufferSize];
+
+            //AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, FREQUENCY, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize, AudioTrack.MODE_STREAM);
+            AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,44100,AudioFormat.CHANNEL_OUT_MONO,AudioFormat.ENCODING_PCM_16BIT,minBufferSize,AudioTrack.MODE_STREAM);
+            int i=0;
+
+            while((i = inputStream.read(audioData)) != -1) {
+                audioTrack.write(audioData,0,i);
+
+                System.out.println("Audio bytes : " + i);
+            }
+
+        } catch(FileNotFoundException fe) {
+            fe.printStackTrace();
+        } catch(IOException io) {
+            io.printStackTrace();
+        }
 
     }
 

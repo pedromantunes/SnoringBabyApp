@@ -6,7 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.CountDownTimer;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 public class DrawThread extends Thread {
     private int oldX = 0;
@@ -16,16 +18,17 @@ public class DrawThread extends Thread {
     private Paint mPaint;
     private int baseline;
     public boolean draw_isRecording = true;
+    private TextView counter;
 
-    public DrawThread(int baseline, SurfaceView sfv, Paint mPaint) {
-        this.baseline = baseline;
-        this.sfv = sfv;
-        this.mPaint = mPaint;
+    public DrawThread(TextView counter ) {
+        this.counter = counter;
+        //this.sfv = sfv;
+        //this.mPaint = mPaint;
 
     }
 
     public void run() {
-        while (true) {
+        /*while (true) {
             if (draw_isRecording) {
                 // System.out.println("draw");
                 ArrayList<short[]> buf = new ArrayList<short[]>();
@@ -47,7 +50,20 @@ public class DrawThread extends Thread {
                     }
                 }
             }
-        }
+        }*/
+
+        /*new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+                String seconds = Long.toString(millisUntilFinished /1000);
+                counter.setText(seconds);
+            }
+
+            public void onFinish() {
+                counter.setText("done!");
+            }
+        }.start();*/
     }
 
     void SimpleDraw(int start, short[] buffer, int rate, int baseLine) {

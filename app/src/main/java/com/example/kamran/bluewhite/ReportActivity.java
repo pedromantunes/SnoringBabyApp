@@ -1,8 +1,11 @@
 package com.example.kamran.bluewhite;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,17 +36,34 @@ public class ReportActivity extends AppCompatActivity {
             final TextView height = (TextView) findViewById(R.id.height_text);
             final TextView weight = (TextView) findViewById(R.id.weight_text);
 
-            name.setText(details[0]);
-            name.setText(details[1]);
-            name.setText(details[2]);
-            name.setText(details[3]);
+            String[] parts = details[0].split(",");
+
+            name.setText(parts[0]);
+            age.setText(parts[1]);
+            weight.setText(parts[2]);
+            height.setText(parts[3]);
+
+            fstream = openFileInput("video_uri");
+            sbuffer = new StringBuffer();
+            while ((i = fstream.read())!= -1){
+                sbuffer.append((char)i);
+            }
+            fstream.close();
+            String video_uri[] = sbuffer.toString().split("\n");
+
+            final VideoView videoView = (VideoView)findViewById(R.id.videoView);
+
+            MediaController mediaController = new MediaController(this);
+            mediaController.setAnchorView(videoView);
+            // Set video link (mp4 format )
+            videoView.setMediaController(mediaController);
+            videoView.setVideoURI(Uri.parse(video_uri[0]));
+            videoView.start();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }

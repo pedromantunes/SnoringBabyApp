@@ -3,6 +3,7 @@ package com.example.kamran.bluewhite;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
@@ -20,6 +21,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.MessageButtonBehaviour;
@@ -28,6 +35,7 @@ import agency.tango.materialintroscreen.SlideFragmentBuilder;
 public class signup extends MaterialIntroActivity implements ActivityCompat.OnRequestPermissionsResultCallback
 {
     ImageView sback;
+    private VideoView videoView;
     private static final int MEDIA_RECORDER_REQUEST = 0;
     private final String[] requiredPermissions = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -100,7 +108,7 @@ public class signup extends MaterialIntroActivity implements ActivityCompat.OnRe
                         }
                     }, "Iniciar video"));
 
-            if (value.equalsIgnoreCase("video")) {
+            if (value.equalsIgnoreCase("initial")) {
 
                 addSlide(new SlideFragmentBuilder()
                         .backgroundColor(R.color.dark_grey)
@@ -111,7 +119,7 @@ public class signup extends MaterialIntroActivity implements ActivityCompat.OnRe
                     @Override
                     public void onClick(View v) {
 
-                        Intent it = new Intent(signup.this, AudioActivity.class);
+                        Intent it = new Intent(signup.this, RecordnPlayActivity.class);
                         it.putExtra("state", "audio");
                         startActivity(it);
                     }
@@ -125,7 +133,19 @@ public class signup extends MaterialIntroActivity implements ActivityCompat.OnRe
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == 1 && resultCode == RESULT_OK) {
             Uri videoUri = intent.getData();
-            // mVideoView.setVideoURI(videoUri);
+
+            FileOutputStream fstream = null;
+            try {
+                fstream = openFileOutput("video_uri", Context.MODE_PRIVATE);
+                String user_data =(new StringBuilder()).append(videoUri).toString();
+                fstream.write(user_data.getBytes());
+                fstream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

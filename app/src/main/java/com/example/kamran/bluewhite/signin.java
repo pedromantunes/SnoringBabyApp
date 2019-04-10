@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,8 +18,7 @@ import customfonts.MyTextView;
 
 public class signin extends AppCompatActivity {
 
-    ImageView sback;
-    MyTextView start_register;
+    TextView start_register;
     EditText name;
     EditText age;
     EditText weight;
@@ -30,15 +30,15 @@ public class signin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_signin);
-        sback = (ImageView) findViewById(R.id.sinb);
-        start_register = (MyTextView) findViewById(R.id.create_register);
-        sback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent it = new Intent(signin.this, main.class);
-                startActivity(it);
-            }
-        });
+      //  sback = (ImageView) findViewById(R.id.sinb);
+        start_register = (TextView) findViewById(R.id.create_register);
+//        sback.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent it = new Intent(signin.this, main.class);
+//                startActivity(it);
+//            }
+//        });
 
         start_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,21 +50,14 @@ public class signin extends AppCompatActivity {
 
                 try {
                     fstream = openFileOutput("user_details", Context.MODE_PRIVATE);
-                    fstream.write(name.getText().toString().getBytes());
-                    fstream.write(age.getText().toString().getBytes());
-                    fstream.write(weight.getText().toString().getBytes());
-                    fstream.write(height.getText().toString().getBytes());
+                    String user_data =(new StringBuilder()).append(name.getText()).append(",").append(age.getText()).append(",").append(weight.getText()).append(",").append(height.getText()).toString();
+                    fstream.write(user_data.getBytes());
                     fstream.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
-                age.getText().toString();
-                weight.getText().toString();
-                height.getText().toString();
 
                 Intent it = new Intent(signin.this, signup.class);
                 it.putExtra("state", "initial");

@@ -23,7 +23,6 @@ public class main extends AppCompatActivity {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent it = new Intent(main.this,ReportActivity.class);
                 startActivity(it);
 

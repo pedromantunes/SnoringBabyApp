@@ -1,12 +1,22 @@
 package com.example.kamran.bluewhite;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 
 import com.example.kamran.bluewhite.AlarmStaticVariables;
+
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class RecorderThread extends Thread {
     private AudioRecord audioRecord;
@@ -15,6 +25,12 @@ public class RecorderThread extends Thread {
     private int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
     private int sampleRate = 44100;
     private int frameByteSize = 1024; // for 1024 fft size (16bit sample size)
+    private MediaRecorder myAudioRecorder;
+    FileOutputStream fstream;
+    int recBufSize;
+    OutputStream os = null;
+
+    DataOutputStream dataOutputStream;
 
     byte[] buffer;
     byte[] totalBuf;
@@ -23,9 +39,9 @@ public class RecorderThread extends Thread {
     // showVariableThread showVariable;
     Handler showhandler;
 
-    public RecorderThread(Handler showhandler) {
+    public RecorderThread(Handler showhandler, Context context, MediaRecorder myAudioRecorder) {
         this.showhandler = showhandler;
-        int recBufSize = AudioRecord.getMinBufferSize(sampleRate,
+        recBufSize = AudioRecord.getMinBufferSize(sampleRate,
                 channelConfiguration, audioEncoding); // need to be larger than
         // size of a frame
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
@@ -34,6 +50,23 @@ public class RecorderThread extends Thread {
         buffer = new byte[frameByteSize];
         totalBuf = new byte[AlarmStaticVariables.sampleSize * 2];
         cnt = 0;
+
+        /*String output = Environment.getExternalStorageDirectory().getAbsolutePath() + "/myrecording.3gp";
+        myAudioRecorder = new MediaRecorder();
+        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        myAudioRecorder.setOutputFile(output);
+
+        try {
+            fstream = context.openFileOutput("audio_file", Context.MODE_PRIVATE);
+            fstream.write(output.getBytes());
+            fstream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
     public AudioRecord getAudioRecord() {
@@ -46,8 +79,22 @@ public class RecorderThread extends Thread {
 
     public void startRecording() {
         try {
-            audioRecord.startRecording();
+            //myAudioRecorder.prepare();
+            //myAudioRecorder.start();
+            //audioRecord.startRecording();
+
             isRecording = true;
+
+            File file = new File(Environment.getExternalStorageDirectory(), "test.pcm");
+
+            file.createNewFile();
+
+            OutputStream outputStream = new FileOutputStream(file);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+            dataOutputStream = new DataOutputStream(bufferedOutputStream);
+
+            audioRecord.startRecording();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,18 +102,31 @@ public class RecorderThread extends Thread {
 
     public void stopRecording() {
         try {
+            audioRecord.getAudioSource();
             audioRecord.stop();
+            dataOutputStream.close();
+
+            //myAudioRecorder.stop();
+            //myAudioRecorder.release();
+            //myAudioRecorder = null;
+
             isRecording = false;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public byte[] getFrameBytes() {
+    public byte[] getFrameBytes() throws IOException {
 
         //Create a timestemp to know how many seconds were recorded
 
         int bufferReadResult = audioRecord.read(buffer, 0, frameByteSize);
+
+        /*
+        for(int i = 0; i < bufferReadResult; i++){
+            dataOutputStream.writeShort(buffer[i]);
+        }
+        */
 
         // analyze sound
         int totalAbsValue = 0;

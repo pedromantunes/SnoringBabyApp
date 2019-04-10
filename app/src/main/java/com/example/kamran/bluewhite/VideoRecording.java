@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.TextureView;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import java.io.File;
 
@@ -49,6 +50,7 @@ public class VideoRecording extends Activity implements ActivityCompat.OnRequest
     private TextureView mPreview;
     private MediaRecorder mMediaRecorder;
     private File mOutputFile;
+    private VideoView videoView;
 
     private boolean isRecording = false;
     private static final String TAG = "Recorder";
@@ -79,7 +81,8 @@ public class VideoRecording extends Activity implements ActivityCompat.OnRequest
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == 1 && resultCode == RESULT_OK) {
             Uri videoUri = intent.getData();
-           // mVideoView.setVideoURI(videoUri);
+            videoView = (VideoView)findViewById(R.id.videoView);
+            videoView.setVideoURI(videoUri);
         }
     }
 

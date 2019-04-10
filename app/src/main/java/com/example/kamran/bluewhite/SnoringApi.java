@@ -25,6 +25,12 @@ public class SnoringApi extends DetectionApi {
     private double AVER_E;
 
     private int sampleRange = 7;
+    private int apneaRange = -7;
+
+    private int snoring = 0;
+    private int apnea = 0;
+    private boolean isSnoring = false;
+    private boolean isInApnea = false;
 
     public SnoringApi(WaveHeader waveHeader) {
         super(waveHeader);
@@ -49,11 +55,28 @@ public class SnoringApi extends DetectionApi {
         maxNumZeroCross = 1267;
 
         numRobust = 10;
+
+        snoring = 0;
+        apnea = 0;
+        isInApnea = false;
+        isSnoring = false;
+
+    }
+
+    public void resetValues()
+    {
+        snoring = 0;
+        apnea = 0;
+        isInApnea = false;
+        isSnoring = false;
+
     }
 
     public int isInApnea(byte[] audioBytes){
         // return isSpecificSound(audioBytes);
         int cnt = 0;
+        boolean finalApnea = false;
+        int apneaCount = 0;
         this.data = audioBytes;
         Wave wave = new Wave(waveHeader, audioBytes); // audio bytes of this
         // frame
@@ -61,46 +84,42 @@ public class SnoringApi extends DetectionApi {
         this.amplitudes = wave.getNormalizedAmplitudes();
         setE_ZCRArray(100, 50);
         cal_threshold();
-        float[] res = getSnoring();
+        float[] res = getApnea();
         System.out.println(Arrays.toString(res));
         int num = res.length / 2;
 
-        if (AlarmStaticVariables.snoringCount > 0) {
-            boolean ctn = true;
-            for (int i = 0; i < res.length; i++) {
-                if (ctn && res[i] >= sampleRange) {
-                    AlarmStaticVariables.snoringCount++;
-                    if (AlarmStaticVariables.snoringCount >= AlarmStaticVariables.sampleCount) {
-                        System.out.println("return here");
-                        return 4;
+        for (int i = 0; i < res.length; i++) {
+            System.out.println("Detection values = " + res[i]);
+            if (res[i] >= sampleRange) {
+                snoring++;
+                if (snoring >= AlarmStaticVariables.sampleCount) {
+                    isSnoring = true;
+                    System.out.println("Is snoring");
+                    if(isInApnea)
+                    {
+                        apneaCount++;
+                        isSnoring = false;
+                        isInApnea = false;
+                        apnea = 0;
+                        snoring = 0;
                     }
-                } else if (!ctn && res[i] >= sampleRange) {
-                    cnt++;
-                    if (cnt >= AlarmStaticVariables.sampleCount) {
-                        System.out.println("return 5 here");
-                        return 4;
-                    }
-                } else if (res[i] < sampleRange) {
-                    ctn = false;
-                    AlarmStaticVariables.snoringCount = 0;
-                    cnt = 0;
                 }
-            }
-        } else {
-            for (int i = 0; i < res.length; i++) {
-                if (res[i] >= sampleRange) {
-                    cnt++;
-                    if (cnt >= AlarmStaticVariables.sampleCount) {
-                        System.out.println("return 5 here");
-                        return 4;
-                    }
-                } else
-                    cnt = 0;
+            } else if(isSnoring && res[i] < apneaRange)
+            {
+                System.out.println("Apnea = " + apnea);
+                apnea++;
+                if(apnea > 2)
+                {
+                    System.out.println("Is in apnea");
+                    isInApnea = true;
+                    snoring = 0;
+                    apnea = 0;
+                }
             }
         }
 
-        System.out.println("cnt=" + cnt);
-        return cnt;
+        System.out.println("apneaCount=" + apneaCount);
+        return apneaCount;
     }
 
     public void getFrequency(byte[] audioBytes){
@@ -326,34 +345,23 @@ public class SnoringApi extends DetectionApi {
         this.setThreshold_E(I_1);
         this.setThreshold_ZCR(c * this.getAVER_ZCR());
 
-
-
+        /*
          for(int i=0; i<this.ZCR.length; i++)
             System.out.println("ZCR: " + this.ZCR[i]);
             System.out.println("E threshold: " + this.getThreshold_E());
             System.out.println("ZCR threshold: " + this.getThreshold_ZCR());
+            */
     }
 
 
-    public float[] getApnea(){
-        ArrayList<Float> apnea = new ArrayList<Float>();// s
+    public float[] getApnea() {
+        ArrayList<Float> snoring_time = new ArrayList<Float>();// s
         boolean flag = false;
-        boolean was_snoring = false;
-        int apnea_time = 0;
-        int final_apnea_time = 0;
         int count = 0;
+        int apnea = 0;
         for (int i = 0; i < this.E.length; i++) {
-
-            //To be in apnea I need to calculate the amount of time that it's
-            // bellow the energy and ZCR is under 0
-            // Then, count the amount of time that it's in this condition
             if (this.E[i] > this.getThreshold_E()
                     && this.ZCR[i] < this.getThreshold_ZCR()) {
-
-                was_snoring = true;
-                final_apnea_time = apnea_time;
-                apnea_time = 0;
-
                 if (flag == false) {
                     // snoring_time.add((float) (i / 20.0));
                     flag = true;
@@ -361,27 +369,26 @@ public class SnoringApi extends DetectionApi {
                 } else {
                     count++;
                 }
+                if(apnea < 0)
+                {
+                    snoring_time.add((float)apnea);
+                    apnea = 0;
+                }
             } else {
-
-                apnea_time += 1;
-
-                was_snoring = false;
-            }
-
-
-            if(final_apnea_time > 3 && was_snoring)
-            {
-                apnea.add((float)1);
-
-                final_apnea_time = 0;
-
+                apnea--;
+                if (flag == true) {
+                    flag = false;
+                    snoring_time.add((float) (count));
+                    count = 0;
+                }
             }
         }
-        float[] res = new float[apnea.size()];
-        for (int i = 0; i < apnea.size(); i++)
-            res[i] = apnea.get(i);
+        float[] res = new float[snoring_time.size()];
+        for (int i = 0; i < snoring_time.size(); i++)
+            res[i] = snoring_time.get(i);
         return res;
     }
+
 
     public float[] getSnoring() {
         ArrayList<Float> snoring_time = new ArrayList<Float>();// s
