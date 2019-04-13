@@ -21,6 +21,9 @@ public class DetectorThread extends Thread {
     // ----------------------------------
     Handler alarmhandler;
 
+    private int snoringCount = 0;
+    private int apneaCount = 0;
+
     // ----------------------------------
 
     public DetectorThread(RecorderThread recorder, Handler alarmhandler) {
@@ -53,6 +56,12 @@ public class DetectorThread extends Thread {
 
     public void stopDetection() {
         // TODO Auto-generated method stub
+
+        Message msg = new Message();
+        msg.arg1 = snoringCount;
+        msg.arg2 = apneaCount;
+        alarmhandler.sendMessage(msg);
+
         _thread = null;
     }
 
@@ -86,22 +95,8 @@ public class DetectorThread extends Thread {
                 // audio analyst
                 if (buffer != null) {
                     System.out.println("How many bytes? " + buffer.length);
-                    AlarmStaticVariables.snoringCount = snoringApi.isSnoring(buffer);
-
-                    int apneaCount = snoringApi.isInApnea(buffer);
-                    System.out.println("count="
-                            + AlarmStaticVariables.snoringCount);
-                    if (AlarmStaticVariables.snoringCount >= AlarmStaticVariables.sampleCount) {
-                        AlarmStaticVariables.snoringCount = 0;
-                        if (!AlarmStaticVariables.inProcess) {
-                            //AlarmStaticVariables.inProcess = true;
-                            int level = 1;
-                            Message msg = new Message();
-                            msg.arg1 = level;
-                            alarmhandler.sendMessage(msg);
-
-                        }
-                    }
+                    snoringCount += snoringApi.isSnoring(buffer);
+                    apneaCount += snoringApi.isInApnea(buffer);
 
                     // end snore detection
 

@@ -2,7 +2,9 @@ package com.example.kamran.bluewhite;
 
 import android.content.Context;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
@@ -10,12 +12,16 @@ import android.os.Message;
 
 import com.example.kamran.bluewhite.AlarmStaticVariables;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class RecorderThread extends Thread {
@@ -122,11 +128,9 @@ public class RecorderThread extends Thread {
 
         int bufferReadResult = audioRecord.read(buffer, 0, frameByteSize);
 
-        /*
-        for(int i = 0; i < bufferReadResult; i++){
+        for(int i = 0; i < bufferReadResult && i < frameByteSize; i++) {
             dataOutputStream.writeShort(buffer[i]);
         }
-        */
 
         // analyze sound
         int totalAbsValue = 0;
@@ -169,6 +173,59 @@ public class RecorderThread extends Thread {
         } else
             return null;
         // return buffer;
+    }
+
+    void playRecord(){
+
+        File file = new File(Environment.getExternalStorageDirectory(), "test.pcm");
+
+        int shortSizeInBytes = Short.SIZE/Byte.SIZE;
+
+        int bufferSizeInBytes = (int)(file.length()/shortSizeInBytes);
+        short[] audioData = new short[bufferSizeInBytes];
+
+        try {
+            InputStream inputStream = new FileInputStream(file);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            DataInputStream dataInputStream = new DataInputStream(bufferedInputStream);
+
+            int i = 0;
+            while(dataInputStream.available() > 0){
+                audioData[i] = dataInputStream.readShort();
+                i++;
+            }
+
+            dataInputStream.close();
+
+            //int selectedPos = spFrequency.getSelectedItemPosition();
+            //int sampleFreq = freqset[selectedPos];
+
+        /*    final String promptPlayRecord =
+                    "PlayRecord()\n"
+                            + file.getAbsolutePath() + "\n"
+                            + (String)spFrequency.getSelectedItem();*/
+
+        /*    Toast.makeText(AndroidAudioRecordActivity.this,
+                    promptPlayRecord,
+                    Toast.LENGTH_LONG).show();*/
+
+            AudioTrack audioTrack = new AudioTrack(
+                    AudioManager.STREAM_MUSIC,
+                    44100,
+                    AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                    bufferSizeInBytes,
+                    AudioTrack.MODE_STREAM);
+
+            audioTrack.play();
+            audioTrack.write(audioData, 0, bufferSizeInBytes);
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
