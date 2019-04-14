@@ -9,11 +9,13 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 
 import com.example.kamran.bluewhite.AlarmStaticVariables;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -23,56 +25,49 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.Buffer;
+import java.nio.ShortBuffer;
 
 public class RecorderThread extends Thread {
     private AudioRecord audioRecord;
     private boolean isRecording;
-    private int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+    private int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
     private int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
     private int sampleRate = 44100;
     private int frameByteSize = 1024; // for 1024 fft size (16bit sample size)
-    private MediaRecorder myAudioRecorder;
     FileOutputStream fstream;
     int recBufSize;
     OutputStream os = null;
 
     DataOutputStream dataOutputStream;
 
-    byte[] buffer;
-    byte[] totalBuf;
+    InputStream inputStream;
+    ByteArrayOutputStream byteArrayOutputStream;
+
+    short[] buffer;
+    short[] totalBuf;
     int cnt;
 
     // showVariableThread showVariable;
     Handler showhandler;
 
-    public RecorderThread(Handler showhandler, Context context, MediaRecorder myAudioRecorder) {
+    public RecorderThread(){
+
+    }
+
+    public RecorderThread(Handler showhandler, Context context) {
         this.showhandler = showhandler;
         recBufSize = AudioRecord.getMinBufferSize(sampleRate,
                 channelConfiguration, audioEncoding); // need to be larger than
+
+        buffer = new short[recBufSize/2];
+        totalBuf = new short[AlarmStaticVariables.sampleSize * 2];
+        cnt = 0;
+
         // size of a frame
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 sampleRate, channelConfiguration, audioEncoding, recBufSize);
 
-        buffer = new byte[frameByteSize];
-        totalBuf = new byte[AlarmStaticVariables.sampleSize * 2];
-        cnt = 0;
-
-        /*String output = Environment.getExternalStorageDirectory().getAbsolutePath() + "/myrecording.3gp";
-        myAudioRecorder = new MediaRecorder();
-        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        myAudioRecorder.setOutputFile(output);
-
-        try {
-            fstream = context.openFileOutput("audio_file", Context.MODE_PRIVATE);
-            fstream.write(output.getBytes());
-            fstream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public AudioRecord getAudioRecord() {
@@ -83,12 +78,9 @@ public class RecorderThread extends Thread {
         return this.isAlive() && isRecording;
     }
 
+
     public void startRecording() {
         try {
-            //myAudioRecorder.prepare();
-            //myAudioRecorder.start();
-            //audioRecord.startRecording();
-
             isRecording = true;
 
             File file = new File(Environment.getExternalStorageDirectory(), "test.pcm");
@@ -122,6 +114,19 @@ public class RecorderThread extends Thread {
         }
     }
 
+    private byte[] short2byte(short[] sData) {
+        int shortArrsize = sData.length;
+        byte[] bytes = new byte[shortArrsize * 2];
+
+        for (int i = 0; i < shortArrsize; i++) {
+            bytes[i * 2] = (byte) (sData[i] & 0x00FF);
+            bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
+            sData[i] = 0;
+        }
+        return bytes;
+
+    }
+
     public byte[] getFrameBytes() throws IOException {
 
         //Create a timestemp to know how many seconds were recorded
@@ -146,10 +151,6 @@ public class RecorderThread extends Thread {
         }
         AlarmStaticVariables.absValue = totalAbsValue / frameByteSize / 2;
 
-        Message msg = new Message();
-        msg.obj = AlarmStaticVariables.absValue;
-        showhandler.sendMessage(msg);
-
         for (int i = 0; i < buffer.length; i++) {
             totalBuf[cnt++] = buffer[i];
         }
@@ -169,10 +170,19 @@ public class RecorderThread extends Thread {
         // System.out.println(cnt + " vs " + AlarmStaticVariables.sampleSize);
         if (cnt > AlarmStaticVariables.sampleSize) {
             cnt = 0;
-            return totalBuf;
+            return short2byte(totalBuf);
         } else
             return null;
         // return buffer;
+    }
+
+    private static final int audioStreamBufferSize = 1024 * 20;
+    static byte[] audioStreamBuffer = new byte[audioStreamBufferSize];
+    private static int audioStreamBufferIndex = 0;
+
+
+    private static void Log(String log) {
+        System.out.println(log);
     }
 
     void playRecord(){
@@ -197,22 +207,10 @@ public class RecorderThread extends Thread {
 
             dataInputStream.close();
 
-            //int selectedPos = spFrequency.getSelectedItemPosition();
-            //int sampleFreq = freqset[selectedPos];
-
-        /*    final String promptPlayRecord =
-                    "PlayRecord()\n"
-                            + file.getAbsolutePath() + "\n"
-                            + (String)spFrequency.getSelectedItem();*/
-
-        /*    Toast.makeText(AndroidAudioRecordActivity.this,
-                    promptPlayRecord,
-                    Toast.LENGTH_LONG).show();*/
-
             AudioTrack audioTrack = new AudioTrack(
                     AudioManager.STREAM_MUSIC,
                     44100,
-                    AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                    AudioFormat.CHANNEL_OUT_MONO,
                     AudioFormat.ENCODING_PCM_16BIT,
                     bufferSizeInBytes,
                     AudioTrack.MODE_STREAM);

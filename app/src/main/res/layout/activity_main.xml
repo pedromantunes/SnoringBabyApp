@@ -12,10 +12,12 @@
         android:background="@drawable/background">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:id="@+id/main_image"
+            android:orientation="vertical"
             android:layout_marginTop="37dp"
+            android:layout_marginBottom="250dp"
             android:layout_marginLeft="30dp">
 
             <ImageView
@@ -23,7 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:paddingBottom="250dp"
                 android:src="@drawable/snoring" />
         </LinearLayout>
 
@@ -31,8 +32,9 @@
             android:id="@+id/process_reading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="550dp"
+            android:layout_marginTop="450dp"
             android:background="@drawable/circleangle"
+            android:gravity="bottom|end"
             android:orientation="horizontal"
             android:padding="16dp">
 
@@ -70,8 +72,10 @@
             android:id="@+id/report"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="450dp"
+            android:layout_below="@id/process_reading"
+            android:layout_marginTop="10dp"
             android:background="@drawable/circleangle"
+            android:gravity="bottom|end"
             android:orientation="horizontal"
             android:padding="16dp"
             android:visibility="visible">

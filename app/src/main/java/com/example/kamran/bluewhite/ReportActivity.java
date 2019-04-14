@@ -1,10 +1,15 @@
 package com.example.kamran.bluewhite;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.FileInputStream;
@@ -14,6 +19,8 @@ import java.io.IOException;
 public class ReportActivity extends AppCompatActivity {
 
     FileInputStream fstream;
+    RecorderThread recorderThread;
+    private TextView play;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +61,8 @@ public class ReportActivity extends AppCompatActivity {
             String snoringAndApnea[] = sbuffer.toString().split("\n");
             String[] snoringAndApneaSplitted = snoringAndApnea[0].split(",");
 
-            snoring.setText(parts[0]);
-            apnea.setText(parts[1]);
+            snoring.setText(snoringAndApneaSplitted[0]);
+            apnea.setText(snoringAndApneaSplitted[1]);
 
             fstream = openFileInput("video_uri");
             sbuffer = new StringBuffer();
@@ -72,7 +79,33 @@ public class ReportActivity extends AppCompatActivity {
             // Set video link (mp4 format )
             videoView.setMediaController(mediaController);
             videoView.setVideoURI(Uri.parse(video_uri[0]));
-            videoView.start();
+
+            play = (TextView) findViewById(R.id.play);
+            play.setEnabled(true);
+            recorderThread = new RecorderThread();
+
+            play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    try {
+                        recorderThread.playRecord();
+                        Toast.makeText(getApplicationContext(), "Playing Audio", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        // make something
+                    }
+                }
+            });
+
+            videoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent it = new Intent(ReportActivity.this, VideoFullActivity.class);
+                    it.putExtra("state", "initial");
+                    startActivity(it);
+                }
+            });
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

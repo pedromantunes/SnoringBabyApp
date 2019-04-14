@@ -102,7 +102,7 @@ public class AudioActivity extends AppCompatActivity {
         selectedDetection = DETECT_SNORE;
         drawThread = new DrawThread(counter);
         drawThread.start();
-        recorderThread = new RecorderThread(showhandler, getApplicationContext(), null);
+        recorderThread = new RecorderThread(showhandler, getApplicationContext());
         recorderThread.start();
         detectorThread = new DetectorThread(recorderThread, alarmhandler);
         detectorThread.start();
@@ -160,17 +160,15 @@ public class AudioActivity extends AppCompatActivity {
         try {
             InputStream inputStream = new FileInputStream(fileName);
 
-            int minBufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            int minBufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
             audioData = new byte[minBufferSize];
 
             //AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, FREQUENCY, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize, AudioTrack.MODE_STREAM);
-            AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,44100,AudioFormat.CHANNEL_OUT_MONO,AudioFormat.ENCODING_PCM_16BIT,minBufferSize,AudioTrack.MODE_STREAM);
+            AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,44100,AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT,minBufferSize,AudioTrack.MODE_STREAM);
             int i=0;
 
             while((i = inputStream.read(audioData)) != -1) {
                 audioTrack.write(audioData,0,i);
-
-                System.out.println("Audio bytes : " + i);
             }
 
         } catch(FileNotFoundException fe) {

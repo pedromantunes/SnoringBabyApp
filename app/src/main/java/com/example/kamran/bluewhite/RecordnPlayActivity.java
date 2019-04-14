@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.nio.ShortBuffer;
 
 public class RecordnPlayActivity extends AppCompatActivity {
-    private Button play, stop, record;
+    private Button stop, record;
     private MediaRecorder myAudioRecorder;
     private String outputFile;
 
@@ -43,11 +43,9 @@ public class RecordnPlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.audio_recordv2);
-        play = (Button) findViewById(R.id.play);
         stop = (Button) findViewById(R.id.stop);
         record = (Button) findViewById(R.id.record);
         stop.setEnabled(false);
-        play.setEnabled(false);
         // ...
 
 
@@ -64,7 +62,7 @@ public class RecordnPlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                // myAudioRecorder.prepare();
                // myAudioRecorder.start();
-                recorderThread = new RecorderThread(showhandler, getApplicationContext(), myAudioRecorder);
+                recorderThread = new RecorderThread(showhandler, getApplicationContext());
                 recorderThread.start();
                 detectorThread = new DetectorThread(recorderThread, alarmhandler);
                 detectorThread.start();
@@ -88,26 +86,7 @@ public class RecordnPlayActivity extends AppCompatActivity {
                 //myAudioRecorder = null;
                 record.setEnabled(true);
                 stop.setEnabled(false);
-                play.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Audio Recorder stopped", Toast.LENGTH_LONG).show();
-            }
-        });
-
-
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                try {
-                    //mediaPlayer.setDataSource(outputFile);
-                    //mediaPlayer.prepare();
-                    //mediaPlayer.start();
-
-                    recorderThread.playRecord();
-                    Toast.makeText(getApplicationContext(), "Playing Audio", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    // make something
-                }
             }
         });
 

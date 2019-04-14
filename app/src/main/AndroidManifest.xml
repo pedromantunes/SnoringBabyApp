@@ -27,6 +27,7 @@
         <activity android:name=".ReportActivity"/>
         <activity android:name=".RecordnPlayActivity"/>
         <activity android:name=".signup" android:theme="@style/Theme.Intro" />
+        <activity android:name=".VideoFullActivity" android:screenOrientation="landscape" />
     </application>
 
 </manifest>

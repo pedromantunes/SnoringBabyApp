@@ -98,6 +98,7 @@ public class signup extends MaterialIntroActivity implements ActivityCompat.OnRe
 
                             if (areCameraPermissionGranted()) {
                                 Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                                 takeVideoIntent.putExtra("state", "video");
                                 if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
                                     startActivityForResult(takeVideoIntent, 1);
