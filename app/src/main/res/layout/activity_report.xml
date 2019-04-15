@@ -15,16 +15,60 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/name_text"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="22dp"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="0dp"
+                    android:layout_weight="1"
                     android:background="#0000"
                     android:hint="Nome"
                     android:inputType="text"
+                    android:textStyle="bold"
                     android:padding="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="#0000"
+                    android:hint="Idade"
+                    android:inputType="text"
+                    android:textStyle="bold"
+                    android:maxLength="12"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linearLayout1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="left"
+                    android:layout_marginLeft="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
+                    android:hint="Nome"
+                    android:inputType="text"
+                    android:padding="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="#ADCCE2"
                     android:textColorHint="#ADCCE2"
                     android:textSize="16dp" />
@@ -32,56 +76,20 @@
                 <TextView
                     android:id="@+id/age_text"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:background="#0000"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
                     android:hint="Idade"
                     android:inputType="text"
                     android:maxLength="12"
-                    android:padding="16dp"
-                    android:layout_gravity="right"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="#ADCCE2"
                     android:textColorHint="#ADCCE2"
                     android:textSize="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="fill_parent"
-                android:layout_below="@id/linearLayout1"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/weight_text"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="22dp"
-                    android:background="#0000"
-                    android:hint="Peso"
-                    android:inputType="text"
-                    android:padding="16dp"
-                    android:layout_gravity="left"
-                    android:textColor="#ADCCE2"
-                    android:textColorHint="#ADCCE2"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/height_text"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:background="#0000"
-                    android:hint="Altura"
-                    android:inputType="text"
-                    android:maxLength="12"
-                    android:padding="16dp"
-                    android:layout_gravity="right"
-                    android:textColor="#ADCCE2"
-                    android:textColorHint="#ADCCE2"
-                    android:textSize="16dp" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -92,31 +100,176 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/snoring_text"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="22dp"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
                     android:background="#0000"
+                    android:hint="Peso"
+                    android:textStyle="bold"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="#0000"
+                    android:hint="Altura"
+                    android:textStyle="bold"
+                    android:inputType="text"
+                    android:maxLength="12"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="fill_parent"
+                android:layout_below="@id/linearLayout3"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+
+                <TextView
+                    android:id="@+id/weight_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/linearLayout4"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
                     android:hint="Peso"
                     android:inputType="text"
                     android:padding="16dp"
-                    android:layout_gravity="left"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="#ADCCE2"
                     android:textColorHint="#ADCCE2"
                     android:textSize="16dp" />
 
                 <TextView
-                    android:id="@+id/apnea_text"
+                    android:id="@+id/height_text"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:background="#0000"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
                     android:hint="Altura"
                     android:inputType="text"
                     android:maxLength="12"
-                    android:padding="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="fill_parent"
+                android:layout_below="@id/linearLayout4"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="0dp"
+                    android:layout_weight="1"
+                    android:background="#0000"
+                    android:hint="Apneia"
+                    android:textStyle="bold"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="#0000"
+                    android:hint="Roncopatia"
+                    android:textStyle="bold"
+                    android:inputType="text"
+                    android:maxLength="12"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout6"
+                android:layout_width="fill_parent"
+                android:layout_below="@id/linearLayout5"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/apnea_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
+                    android:hint="Apneia"
+                    android:inputType="text"
+                    android:padding="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/snoring_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="@drawable/border"
+                    android:hint="Roncopatia"
+                    android:inputType="text"
+                    android:maxLength="12"
+                    android:padding="16dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="#ADCCE2"
                     android:textColorHint="#ADCCE2"
                     android:textSize="16dp" />
@@ -124,10 +277,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout4"
+                android:id="@+id/linearLayout7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/linearLayout3"
+                android:layout_below="@id/linearLayout6"
                 android:orientation="vertical">
 
                 <customfonts.MyTextView
@@ -150,12 +303,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout5"
+                android:id="@+id/linearLayout8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="0dp"
-                android:layout_below="@id/linearLayout4"
+                android:layout_below="@id/linearLayout7"
                 android:orientation="vertical">
 
                 <VideoView

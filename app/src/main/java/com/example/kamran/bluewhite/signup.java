@@ -49,53 +49,20 @@ public class signup extends MaterialIntroActivity implements ActivityCompat.OnRe
         Bundle bundle = getIntent().getExtras();
         String value = bundle.getString("state");
 
-
-//            addSlide(new SlideFragmentBuilder()
-//                            .backgroundColor(R.color.first_slide_background)
-//                            .buttonsColor(R.color.first_slide_buttons)
-//                            .image(R.drawable.bag)
-//                            .description("O processo segue os seguintes passos")
-//                            .build(),
-//                    new MessageButtonBehaviour(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            setContentView(R.layout.activity_signin);
-//                            sback = (ImageView) findViewById(R.id.sinb);
-//                            sback.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    Intent it = new Intent(signup.this, signup.class);
-//
-//                                    startActivity(it);
-//                                }
-//                            });
-//                        }
-//                    }, "Iniciar registo"));
-
-
-
-        /*addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.second_slide_background)
-                .buttonsColor(R.color.second_slide_buttons)
-                .title("Want more?")
-                .description("Go on")
-                .build());*/
-
         if (value.equalsIgnoreCase("initial")) {
             addSlide(new SlideFragmentBuilder()
                             .backgroundColor(R.color.dark_grey)
                             .buttonsColor(R.color.third_slide_buttons)
                             .image(R.drawable.snoring)
-                            .title("Gravação de video")
-                            .description("1 - Por favor coloque a câmara direcionada para a zona do peito")
+                            .title("Vai começar a filmar o seu filho. Assegure-se que se encontra " +
+                                    "num ambiente sem ruído e com alguma luminosidade. Siga as instruções abaixo indicadas:\n \n")
+                            .description("1 - A criança deve estar deitada de costas \n" +
+                                    "2 - Deve remover o máximo de roupa possível acima da cintura \n" +
+                                    "3 - Certifique-se que a câmara do seu telemóvel abrange desde a cabeça até à cintura durante todo o tempo de gravação \n")
                             .build(),
                     new MessageButtonBehaviour(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // Intent it = new Intent(signup.this, VideoRecording.class);
-                            // it.putExtra("state", "video");
-                            // startActivity(it);
-
                             if (areCameraPermissionGranted()) {
                                 Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                                 takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -114,8 +81,9 @@ public class signup extends MaterialIntroActivity implements ActivityCompat.OnRe
                 addSlide(new SlideFragmentBuilder()
                         .backgroundColor(R.color.dark_grey)
                         .buttonsColor(R.color.fourth_slide_buttons)
-                        .title("Gravação de audio")
-                        .description("Por favor coloque o microfone do dispositivo móvel a 1 metro do utente")
+                        .image(R.drawable.snoring)
+                        .title("Vai começar a gravar o som respiratório do seu filho. \" +\n" +
+                                "                                \"Assegure-se que está num ambiente com pouco ruído. Coloque o microfone do telemóvel próximo da face da criança.")
                         .build(), new MessageButtonBehaviour(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

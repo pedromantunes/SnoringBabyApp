@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background">
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:paddingLeft="3dp"
-                    android:src="@drawable/bag" />
+                    android:src="@drawable/pencil" />
             </FrameLayout>
 
             <customfonts.MyTextView
@@ -63,9 +63,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"
-                android:text="Criar registo"
+                android:text="Iniciar Registo"
                 android:textColor="#fff"
-                android:textSize="22dp" />
+                android:textSize="22dp" />s
         </LinearLayout>
 
         <LinearLayout
@@ -96,7 +96,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:paddingLeft="3dp"
-                    android:src="@drawable/bag" />
+                    android:src="@drawable/report" />
             </FrameLayout>
 
             <customfonts.MyTextView
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"
-                android:text="Relatorio"
+                android:text="Relatório"
                 android:textColor="#fff"
                 android:textSize="22dp" />
         </LinearLayout>
