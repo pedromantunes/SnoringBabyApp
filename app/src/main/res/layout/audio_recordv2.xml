@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.kamran.bluewhite.RecordnPlayActivity">
+    android:background="@color/dark_grey"
+    tools:context="com.medical.kamran.bluewhite.RecordnPlayActivity">
     <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
@@ -14,7 +15,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Record"
+        android:text="Gravar"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:id="@+id/record"
         android:layout_below="@id/logo"
@@ -24,11 +26,21 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
+        android:text="Parar"
         android:textSize="20sp"
+        android:textColor="@color/white"
         android:id="@+id/stop"
         android:layout_below="@id/record"
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
         />
+
+    <TextView
+        android:id="@+id/time_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stop"
+        android:layout_marginTop="40dp"
+        android:textSize="35dp"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

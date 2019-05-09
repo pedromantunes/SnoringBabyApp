@@ -1,41 +1,35 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 import android.content.Context;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ShortBuffer;
 
 public class RecordnPlayActivity extends AppCompatActivity {
     private Button stop, record;
+    public TextView counter;
     private MediaRecorder myAudioRecorder;
     private String outputFile;
 
     private DetectorThread detectorThread;
     private RecorderThread recorderThread;
+    private CountingThread counterThread;
 
     private Handler showhandler = null;
     private Handler alarmhandler = null;
+    String currentUserId;
 
     private Toast mToast;
 
@@ -45,31 +39,26 @@ public class RecordnPlayActivity extends AppCompatActivity {
         setContentView(R.layout.audio_recordv2);
         stop = (Button) findViewById(R.id.stop);
         record = (Button) findViewById(R.id.record);
+        counter = (TextView) findViewById(R.id.time_counter);
+
+        Bundle bundle = getIntent().getExtras();
+        currentUserId = bundle.getString("user_id");
+
         stop.setEnabled(false);
-        // ...
-
-
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
-
-        myAudioRecorder = new MediaRecorder();
-        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        myAudioRecorder.setOutputFile(outputFile);
 
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // myAudioRecorder.prepare();
-               // myAudioRecorder.start();
-                recorderThread = new RecorderThread(showhandler, getApplicationContext());
+                recorderThread = new RecorderThread(showhandler, getApplicationContext(), currentUserId);
                 recorderThread.start();
                 detectorThread = new DetectorThread(recorderThread, alarmhandler);
                 detectorThread.start();
+                counterThread = new CountingThread(recorderThread, detectorThread, record, stop, getApplicationContext(), counter);
+                counterThread.start();
                 // make something ...
                 record.setEnabled(false);
                 stop.setEnabled(true);
-                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Gravação de audio iniciada", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -79,14 +68,11 @@ public class RecordnPlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 recorderThread.stopRecording();
                 detectorThread.stopDetection();
-                //recorderThread.stop();
-                //detectorThread.stop();
-               // myAudioRecorder.stop();
-               // myAudioRecorder.release();
-                //myAudioRecorder = null;
+                counterThread.stopCounter();
                 record.setEnabled(true);
                 stop.setEnabled(false);
-                Toast.makeText(getApplicationContext(), "Audio Recorder stopped", Toast.LENGTH_LONG).show();
+                counter.setText("Gravação terminada");
+                Toast.makeText(getApplicationContext(), "Gravação de audio terminada", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -98,17 +84,17 @@ public class RecordnPlayActivity extends AppCompatActivity {
 
         alarmhandler = new Handler() {
             public void handleMessage(Message msg) {
-                FileOutputStream fstream = null;
-                try {
-                    fstream = openFileOutput("snoring_apnea", Context.MODE_PRIVATE);
-                    String user_data =(new StringBuilder()).append(msg.arg1).append(",").append(msg.arg2).toString();
-                    fstream.write(user_data.getBytes());
-                    fstream.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            FileOutputStream fstream = null;
+            try {
+                fstream = openFileOutput("snoring_apnea_" + currentUserId, Context.MODE_PRIVATE);
+                String user_data =(new StringBuilder()).append(msg.arg1).append(",").append(msg.arg2).toString();
+                fstream.write(user_data.getBytes());
+                fstream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             }
         };
 

@@ -1,5 +1,8 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
+import com.medical.kamran.bluewhite.AlarmStaticVariables;
+import com.medical.kamran.bluewhite.RecorderThread;
+import com.medical.kamran.bluewhite.SnoringApi;
 import com.musicg.wave.WaveHeader;
 
 import android.media.AudioFormat;
@@ -95,14 +98,16 @@ public class DetectorThread extends Thread {
                 // audio analyst
                 if (buffer != null) {
                     System.out.println("How many bytes? " + buffer.length);
-                    snoringCount += snoringApi.isSnoring(buffer);
-                    apneaCount += snoringApi.isInApnea(buffer);
+
+                    snoringApi.calculateAmplitude(buffer);
+                    snoringCount += snoringApi.isSnoring();
+                    apneaCount += snoringApi.isInApnea();
 
                     // end snore detection
 
                 } else {
                     // no sound detected
-                   // MainActivity.snoreValue = 0;
+                    // MainActivity.snoreValue = 0;
                 }
                 // end audio analyst
             }

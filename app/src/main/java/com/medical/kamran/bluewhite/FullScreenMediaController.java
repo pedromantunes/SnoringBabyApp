@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,14 +34,6 @@ class FullScreenMediaController extends MediaController {
         //fullscreen indicator from intent
         isFullScreen =  ((Activity)getContext()).getIntent().
                 getStringExtra("fullScreenInd");
-
-        /*
-        if("y".equals(isFullScreen)){
-            fullScreen.setImageResource(R.drawable.ic_fullscreen_exit);
-        }else{
-            fullScreen.setImageResource(R.drawable.ic_fullscreen);
-        }
-        */
 
         //add listener to image button to handle full screen and exit full screen events
         fullScreen.setOnClickListener(new OnClickListener() {

@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

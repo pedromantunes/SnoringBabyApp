@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -23,7 +23,7 @@ public class main extends AppCompatActivity {
         report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(main.this,ReportActivity.class);
+                Intent it = new Intent(main.this,ReportListActivity.class);
                 startActivity(it);
 
             }

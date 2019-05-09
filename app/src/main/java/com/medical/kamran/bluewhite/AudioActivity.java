@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,9 +8,7 @@ import android.graphics.Paint;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +18,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import static android.provider.UserDictionary.Words.FREQUENCY;
 
 public class AudioActivity extends AppCompatActivity {
 
@@ -84,6 +79,8 @@ public class AudioActivity extends AppCompatActivity {
         mPaint = new Paint();
         mPaint.setColor(Color.GREEN);
 
+        String userId = "";
+
         showhandler = new Handler() {
             public void handleMessage(Message msg) {
                 //txtAbs.setText(msg.obj.toString());
@@ -102,10 +99,6 @@ public class AudioActivity extends AppCompatActivity {
         selectedDetection = DETECT_SNORE;
         drawThread = new DrawThread(counter);
         drawThread.start();
-        recorderThread = new RecorderThread(showhandler, getApplicationContext());
-        recorderThread.start();
-        detectorThread = new DetectorThread(recorderThread, alarmhandler);
-        detectorThread.start();
 
         play.setOnClickListener(new View.OnClickListener() {
             @Override

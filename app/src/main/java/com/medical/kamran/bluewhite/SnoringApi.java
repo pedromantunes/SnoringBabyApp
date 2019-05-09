@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 
 import java.util.ArrayList;
@@ -72,11 +72,7 @@ public class SnoringApi extends DetectionApi {
 
     }
 
-    public int isInApnea(byte[] audioBytes){
-        // return isSpecificSound(audioBytes);
-        int cnt = 0;
-        boolean finalApnea = false;
-        int apneaCount = 0;
+    public void calculateAmplitude(byte[] audioBytes){
         this.data = audioBytes;
         Wave wave = new Wave(waveHeader, audioBytes); // audio bytes of this
         // frame
@@ -84,17 +80,21 @@ public class SnoringApi extends DetectionApi {
         this.amplitudes = wave.getNormalizedAmplitudes();
         setE_ZCRArray(100, 50);
         cal_threshold();
+    }
+
+    public int isInApnea(){
+        // return isSpecificSound(audioBytes);
+        int cnt = 0;
+        boolean finalApnea = false;
+        int apneaCount = 0;
         float[] res = getApnea();
-        System.out.println(Arrays.toString(res));
         int num = res.length / 2;
 
         for (int i = 0; i < res.length; i++) {
-            System.out.println("Detection values = " + res[i]);
             if (res[i] >= sampleRange) {
                 snoring++;
                 if (snoring >= AlarmStaticVariables.sampleCount) {
                     isSnoring = true;
-                    System.out.println("Is snoring");
                     if(isInApnea)
                     {
                         apneaCount++;
@@ -144,18 +144,10 @@ public class SnoringApi extends DetectionApi {
 
     }
 
-    public int isSnoring(byte[] audioBytes) {
+    public int isSnoring() {
         // return isSpecificSound(audioBytes);
         int cnt = 0;
-        this.data = audioBytes;
-        Wave wave = new Wave(waveHeader, audioBytes); // audio bytes of this
-        // frame
-        // this.amplitudes = wave.getSampleAmplitudes();
-        this.amplitudes = wave.getNormalizedAmplitudes();
-        setE_ZCRArray(100, 50);
-        cal_threshold();
         float[] res = getSnoring();
-        System.out.println(Arrays.toString(res));
         int num = res.length / 2;
 
         if (AlarmStaticVariables.snoringCount > 0) {
@@ -164,14 +156,12 @@ public class SnoringApi extends DetectionApi {
                 if (ctn && res[i] >= sampleRange) {
                     AlarmStaticVariables.snoringCount++;
                     if (AlarmStaticVariables.snoringCount >= AlarmStaticVariables.sampleCount) {
-                        System.out.println("return here");
-                        return 4;
+                        return 1;
                     }
                 } else if (!ctn && res[i] >= sampleRange) {
                     cnt++;
                     if (cnt >= AlarmStaticVariables.sampleCount) {
-                        System.out.println("return 5 here");
-                        return 4;
+                        return 1;
                     }
                 } else if (res[i] < sampleRange) {
                     ctn = false;
@@ -184,8 +174,7 @@ public class SnoringApi extends DetectionApi {
                 if (res[i] >= sampleRange) {
                     cnt++;
                     if (cnt >= AlarmStaticVariables.sampleCount) {
-                        System.out.println("return 5 here");
-                        return 4;
+                        return 1;
                     }
                 } else
                     cnt = 0;
@@ -282,7 +271,6 @@ public class SnoringApi extends DetectionApi {
         } else {
             sampleRate = this.waveHeader.getSampleRate();
         }
-        System.out.println("sampleRate=" + sampleRate);
         int length = (sampleRate / 1000) * length_time;
         int overlap = (sampleRate / 1000) * overlap_time;
         int count_e = 0;
@@ -328,8 +316,6 @@ public class SnoringApi extends DetectionApi {
         }
         this.setAVER_E();
         this.setAVER_ZCR();
-         for(int i=0; i< this.E.length; i++)
-            System.out.println("E:" + this.E[i]);
     }
 
     public void cal_threshold() {

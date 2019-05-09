@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 
 /*
@@ -28,8 +28,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.TextureView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -77,16 +75,6 @@ public class VideoRecording extends Activity implements ActivityCompat.OnRequest
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Uri videoUri = intent.getData();
-            videoView = (VideoView)findViewById(R.id.videoView);
-            videoView.setVideoURI(videoUri);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
@@ -95,10 +83,6 @@ public class VideoRecording extends Activity implements ActivityCompat.OnRequest
     @Override
     protected void onPause() {
         super.onPause();
-        // if we are using MediaRecorder, release it first
-       // releaseMediaRecorder();
-        // release the camera immediately on pause event
-      //  releaseCamera();
     }
 
     private boolean areCameraPermissionGranted() {

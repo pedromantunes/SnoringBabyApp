@@ -1,4 +1,4 @@
-package com.example.kamran.bluewhite;
+package com.medical.kamran.bluewhite;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,11 +16,15 @@ public class VideoFullActivity extends AppCompatActivity {
     private VideoView videoView;
     private MediaController mediaController;
     FileInputStream fstream;
+    String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_video_layout);
+
+        Bundle bundle = getIntent().getExtras();
+        currentUserId = bundle.getString("user_id");
 
         videoView = (VideoView) findViewById(R.id.videoViewFull);
         String fullScreen =  getIntent().getStringExtra("fullScreenInd");
@@ -31,8 +35,9 @@ public class VideoFullActivity extends AppCompatActivity {
         }
 
         try {
+
             StringBuffer sbuffer = new StringBuffer();
-            fstream = openFileInput("video_uri");
+            fstream = openFileInput("video_uri_" + currentUserId);
             int i;
             sbuffer = new StringBuffer();
             while ((i = fstream.read())!= -1){

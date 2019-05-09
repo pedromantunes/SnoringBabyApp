@@ -1,12 +1,9 @@
-package com.example.kamran.bluewhite;
-
-import java.util.ArrayList;
+package com.medical.kamran.bluewhite;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.CountDownTimer;
 import android.view.SurfaceView;
 import android.widget.TextView;
 

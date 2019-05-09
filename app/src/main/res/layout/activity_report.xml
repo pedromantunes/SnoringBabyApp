@@ -105,7 +105,7 @@
                     android:layout_gravity="left"
                     android:layout_weight="1"
                     android:background="#0000"
-                    android:hint="Peso"
+                    android:hint="Peso(kg)"
                     android:textStyle="bold"
                     android:inputType="text"
                     android:paddingLeft="16dp"
@@ -123,7 +123,7 @@
                     android:layout_gravity="right"
                     android:layout_weight="1"
                     android:background="#0000"
-                    android:hint="Altura"
+                    android:hint="Altura(cm)"
                     android:textStyle="bold"
                     android:inputType="text"
                     android:maxLength="12"
@@ -287,35 +287,45 @@
                     android:id="@+id/play"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/angle"
-                    android:text="Reproduzir audio"
-                    android:textSize="16dp"
-                    android:textColor="#fff"
-                    android:gravity="center"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginRight="40dp"
-                    android:padding="16dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="28dp"
+                    android:layout_marginLeft="40dp"
                     android:layout_marginTop="32dp"
-                    />
+                    android:layout_marginRight="40dp"
+                    android:background="@drawable/angle"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
+                    android:text="Reproduzir áudio"
+                    android:textColor="#fff"
+                    android:textSize="16dp" />
 
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:id="@+id/linearLayout8"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="0dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/linearLayout7"
                 android:orientation="vertical">
 
-                <VideoView
-                    android:id="@+id/videoView"
+                <customfonts.MyTextView
+                    android:id="@+id/play_video"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="50dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="40dp"
+                    android:background="@drawable/angle"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:text="Reproduzir video"
+                    android:textColor="#fff"
+                    android:textSize="16dp" />
 
             </LinearLayout>
 
